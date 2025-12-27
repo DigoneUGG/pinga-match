@@ -108,3 +108,15 @@
     animation: blink 1.5s infinite alternate;
     border: 3px solid yellow;
 }
+
+#level-list {
+    position: relative;
+    /* ADICIONE ISSO: Garante que offsetTop comece do zero aqui dentro */
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 10px;
+    flex-direction: column-reverse;
+    /* Se o seu mapa for de baixo para cima */
+    align-items: center;
+    gap: 15px;
+}
