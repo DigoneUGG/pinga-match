@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinga Match</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/game.css">
+    <link rel="stylesheet" href="assets/css/map.css">
+    <link rel="stylesheet" href="assets/css/buttons.css">
+    <link rel="stylesheet" href="assets/css/modals.css">
+    <link rel="stylesheet" href="assets/css/game-ui.css">
+    <link rel="icon" href="assets/img/favicon.ico">
+</head>
+
+<body>
+
+    <main class="game-container">
+
+        <div id="splash-screen" class="screen-full">
+            <img src="assets/img/logostudio.png" alt="Pinga Match - Logo Studio" class="splash-logo">
+            <p>Carregando...</p>
+        </div>
+
+        <div id="welcome-screen" class="screen-full"
+            style="background-image: url('assets/img/telas/background_welcome_screen.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+
+            <img src="assets/img/logotipo.png" alt="Pinga Match" class="game-logo floating-anim">
+
+            <button id="btn-play" class="action-btn next-btn">JOGAR</button>
+
+            <div id="login-container-google"
+                style="display: flex; flex-direction: column; align-items: center; margin-top: 20px; gap: 8px;">
+                <button id="btn-login-google" class="action-btn"
+                    style="background: white; width: 50px; height: 50px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google"
+                        style="width: 24px; height: 24px;">
+                </button>
+                <p
+                    style="font-size: 0.8rem; color: #fff; text-shadow: 1px 1px 2px #000; font-family: sans-serif; margin: 0;">
+                    Mantenha seu progresso salvo na nuvem
+                </p>
+            </div>
+
+            <div id="user-info"
+                style="display:none; margin-top: 15px; text-align: center; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;">
+                <span id="user-name" style="font-size: 1.2rem; color: #ffd700;"></span>
+            </div>
+        </div>
+
+        <div id="map-container" class="map-container" style="display: none;">
+            <img src="assets/img/logotipo.png" alt="Pinga Match" class="game-logo">
+            <h2>Selecione o Nível</h2>
+            <div id="level-list" class="level-list"></div>
+
+            <div class="btn-map">
+                <button id="btn-ranking-map" class="icon-button ranking-btn" style="margin-top: 10px;">
+                    <img src="assets/img/btn/ranking.png" alt="Ranking" style="width: 100%; height: 100%;">
+                </button>
+
+                <button id="btn-settings-welcome" class="action-btn exit-btn icon-button-style">
+                    <img src="assets/img/btn/config.png" alt="Configurações">
+                </button>
+
+                <button id="btn-logout-google" class="icon-button logout-btn">
+                    <img src="assets/img/btn/logout.png" alt="Sair">
+                </button>
+            </div>
+        </div>
+
+        <div id="game-view"
+            style="display: none; flex-direction: column; align-items: center; width: 100%; height: 100%;">
+            <header class="game-header">
+                <div class="phase-info">
+                    <h2 id="phase-title">Fase 1</h2>
+
+                    <div class="hud-main-container">
+                        <div class="hud-card moves-card">
+                            <div class="hud-icon-area">
+                                <img src="assets/img/btn/icon_moves.png" alt="Movimentos" class="hud-icon">
+                            </div>
+                            <div class="hud-value-area">
+                                <span class="hud-label">JOGADAS</span>
+                                <span id="moves-left">0</span>
+                            </div>
+                        </div>
+
+                        <div class="hud-card score-card">
+                            <img src="assets/img/btn/icon_score.png" alt="Ícone Pontuação" class="hud-icon">
+
+                            <div class="hud-info">
+                                <span class="hud-label">PONTOS</span>
+                                <span id="score-current" class="hud-value">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="goals-wrapper">
+                        <div class="goals-panel" id="goals-display">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-footer-nav">
+                    <button id="btn-back-map" class="icon-button">
+                        <img src="assets/img/btn/home.png" alt="Voltar">
+                    </button>
+
+                    <button id="btn-ranking-map-game" class="icon-button">
+                        <img src="assets/img/btn/ranking.png" alt="Ranking">
+                    </button>
+
+                    <button id="btn-config" class="icon-button">
+                        <img src="assets/img/btn/config.png" alt="Configurações">
+                    </button>
+                </div>
+            </header>
+
+            <div id="game-board-wrapper" class="game-board-wrapper">
+                <div id="game-board" class="game-board"></div>
+            </div>
+
+            <div id="game-messages" class="game-messages"></div>
+        </div>
+
+        <div id="level-score-modal" class="modal">
+            <div class="modal-content score-pop">
+                <h2>FASE CONCLUÍDA!</h2>
+                <p>Você conquistou:</p>
+                <div class="score-highlight"><span id="points-gained">0</span> PTS</div>
+                <button id="btn-continue-from-score" class="action-btn">CONTINUAR</button>
+            </div>
+        </div>
+
+        <div id="ranking-screen" class="screen-full" style="display:none; background: rgba(0,0,0,0.9); z-index: 1000;">
+            <div class="ranking-header" style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+                <button id="btn-back-from-ranking" class="icon-button"><img src="assets/img/btn/back.png"
+                        style="width: 100%;"></button>
+                <h2 style="margin: 0;">RANKING GLOBAL</h2>
+            </div>
+            <div id="user-rank-highlight" class="user-highlight-card">
+                <span id="user-pos">--º</span>
+                <span id="user-name-rank">Carregando...</span>
+                <span id="user-score-rank">0 PTS</span>
+            </div>
+            <div class="ranking-list-container">
+                <div id="global-ranking-list"></div>
+            </div>
+        </div>
+
+        <div id="game-logo-overlay" class="screen-full" style="display: none;">
+            <img src="assets/img/logotipo.png" alt="Pinga Match" class="splash-logo">
+        </div>
+
+        <div id="zeca-animation-container">
+            <div id="zeca-sprite"></div>
+        </div>
+
+    </main>
+
+    <div id="config-modal" class="modal">
+        <div class="modal-content">
+            <img id="btn-exit-modal" src="assets/img/btn/exit.png" alt="Fechar" class="icon-button modal-close-btn">
+            <h2>Configurações de Áudio</h2>
+            <div class="audio-setting">
+                <label for="music-volume">Música de Fundo:</label>
+                <input type="range" id="music-volume" min="0" max="100" value="50">
+            </div>
+            <div class="audio-setting">
+                <label for="sfx-volume">Efeitos Sonoros:</label>
+                <input type="range" id="sfx-volume" min="0" max="100" value="75">
+            </div>
+            <img id="btn-mute-toggle" src="assets/img/btn/mute-on.png" alt="Mute" class="icon-button mute-toggle">
+        </div>
+    </div>
+
+    <div id="victory-modal" class="modal">
+        <div class="modal-content victory-content">
+            <img src="assets/img/logotipo.png" alt="Pinga Match" class="victory-logo floating-anim">
+            <h2 class="victory-title">Fase Concluída!</h2>
+            <p class="victory-text">O bar está salvo... por enquanto!</p>
+            <div class="victory-buttons">
+                <button id="btn-next-level" class="action-btn next-btn">Próximo Nível</button>
+                <button id="btn-exit-level" class="action-btn exit-btn">Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="defeat-modal" class="modal">
+        <div class="modal-content loss-modal-content">
+            <h2>Fase Perdida!</h2>
+            <p class="loss-text">Você ficou sem movimentos.</p>
+            <div class="loss-buttons">
+                <button id="btn-exit-defeat" class="action-btn exit-btn">Desistir</button>
+                <button id="btn-retry-level" class="action-btn retry-btn">Tentar de Novo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="exit-confirm-modal" class="modal">
+        <div class="modal-content loss-content">
+            <h2 class="loss-title">Voltar ao Mapa?</h2>
+            <p class="loss-text">O progresso da fase atual será perdido.</p>
+            <div class="loss-buttons">
+                <button id="btn-modal-sair" class="action-btn exit-btn">Sair</button>
+                <button id="btn-modal-continuar" class="action-btn retry-btn">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="phase-start-modal" class="screen-full">
+        <div class="modal-content">
+            <h2 class="modal-title" id="start-modal-title"></h2>
+            <p class="modal-info">Objetivos da Fase:</p>
+            <div class="goals-panel modal-goals" id="start-modal-goals"></div>
+            <p class="modal-info">Prepare-se para começar a diversão!</p>
+            <button id="btn-start-level" class="action-btn next-btn">JOGAR</button>
+        </div>
+    </div>
+
+    <script type="module">
+        window.GAME_CONFIG = {
+            TILE_SIZE: 60,
+            BOARD_SIZE: 8,
+            ASSETS_PATH: 'assets/img/tiles/',
+            ANIMATION_PATH: 'assets/img/efeitos/',
+            AUDIO_PATH: 'assets/mp3/',
+            TILE_TYPES: [
+                'chope.png', 'cocktail.png', 'garrafa.png', 'gelo.png',
+                'latinha.png', 'limao.png', 'vinho.png', 'whisky.png'
+            ],
+            BLOCKED_TILE: 'tile_block.png',
+            FROZEN_TILE: 'tile_congelado.png',
+            DOUBLE_FROZEN_TILE: 'duploGelo.png'
+        };
+    </script>
+    <script type="module" src="assets/js/GameEngine.js"></script>
+    <script type="module" src="assets/js/PhaseManager.js"></script>
+    <script type="module" src="assets/js/main.js"></script>
+</body>
+
+</html>

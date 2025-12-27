@@ -1,0 +1,366 @@
+.game-board-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    box-sizing: border-box;
+    flex-grow: 1;
+}
+
+#game-board {
+    display: grid;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 3px solid rgba(255, 215, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 215, 0, 0.3) inset;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-image: linear-gradient(to right,
+            rgba(255, 255, 255, 0.1) 1px,
+            transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: calc(100% / var(--board-size)) calc(100% / var(--board-size));
+}
+
+.tile {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    z-index: 10;
+}
+
+.tile,
+.tile-color-inner {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.tile:hover {
+    filter: brightness(1.1);
+}
+
+.tile.selected {
+    border: 3px solid #ffd700;
+    transform: scale(0.95);
+    box-shadow: 0 0 10px #ffd700;
+}
+
+.tile.swapping {
+    transition: transform 0.2s ease-in-out;
+    z-index: 100;
+}
+
+.tile.destroying {
+    transition: all 0.3s ease-out;
+    transform: scale(1.2);
+    opacity: 0.9;
+    filter: brightness(1.5) drop-shadow(0 0 10px #ff0000);
+    animation: tile-destroy-pop 0.3s forwards;
+    z-index: 110;
+}
+
+@keyframes tile-destroy-pop {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    30% {
+        transform: scale(1.2);
+        opacity: 1;
+        filter: brightness(1.5) drop-shadow(0 0 10px #ffcc00);
+    }
+
+    100% {
+        transform: scale(0.2);
+        opacity: 0;
+        filter: brightness(1) drop-shadow(0 0 0px #ffcc00);
+    }
+}
+
+@keyframes tile-victory-effect {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.5) rotate(15deg) translateY(-50px);
+        opacity: 0;
+    }
+}
+
+.tile.level-complete-destroy {
+    animation: tile-victory-effect 0.6s ease-in-out forwards;
+    z-index: 100;
+}
+
+.tile-blocked {
+    z-index: 5;
+    cursor: default;
+}
+
+.tile-frozen-single {
+    z-index: 5;
+    cursor: pointer;
+}
+
+.tile-frozen-double {
+    z-index: 5;
+    cursor: pointer;
+}
+
+.tile-color-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.tile.shuffling {
+    animation: shuffle 0.5s ease-in-out forwards;
+    opacity: 0;
+}
+
+@keyframes shuffle {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: rotate(180deg) scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+        opacity: 0;
+    }
+}
+
+.screen-shake {
+    animation: shake 0.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+.explosion-container {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 200;
+    width: 250px;
+    height: 250px;
+    opacity: 0.9;
+}
+
+.effect-explosao {
+    width: 60px;
+    height: 60px;
+    background-image: url('../img/efeitos/esp-1/explosao1.png');
+    background-size: contain;
+    animation: fade-out 0.4s ease-out forwards;
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+        transform: scale(0.5) rotate(0deg);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2) rotate(10deg);
+        filter: drop-shadow(0 0 10px #ffcc00);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2) rotate(-10deg);
+        filter: drop-shadow(0 0 0px #ffcc00);
+    }
+}
+
+.explosion-container img {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes hint-blink {
+    0% {
+        box-shadow: 0 0 0 rgb(0, 0, 0);
+        border-color: rgb(255, 255, 255);
+        border-radius: 10px;
+    }
+
+    50% {
+        box-shadow: 0 0 15px #0066ff, 0 0 5px inset;
+        border-color: #0066ff;
+        transform: scale(1.02);
+        border-radius: 10px;
+    }
+
+    100% {
+        box-shadow: 0 0 0 rgb(0, 0, 0);
+        border-color: rgb(250, 249, 249);
+        transform: scale(1);
+        border-radius: 10px;
+    }
+}
+
+.tile.hint-tile {
+    animation: hint-blink 1.2s ease-in-out infinite alternate;
+    z-index: 100;
+}
+
+.tile-wrapper {
+    overflow: visible;
+}
+
+.tile.tile-special-glow {
+    z-index: 105;
+    transition: box-shadow 0.3s ease-in-out, filter 0.3s ease-in-out;
+    animation: neon-pulse 1.5s infinite alternate;
+}
+
+.tile.STRIPED_H.tile-special-glow {
+    box-shadow: 0 0 10px 5px rgba(0, 255, 255, 0.7), inset 0 0 5px rgba(0, 255, 255, 0.5);
+    filter: brightness(1.2);
+}
+
+.tile.STRIPED_V.tile-special-glow {
+    box-shadow: 0 0 10px 5px rgba(0, 255, 0, 0.7), inset 0 0 5px rgba(0, 255, 0, 0.5);
+    filter: brightness(1.2);
+}
+
+.tile.BOMB.tile-special-glow {
+    box-shadow: 0 0 10px 5px rgba(255, 69, 0, 0.7), inset 0 0 5px rgba(255, 69, 0, 0.5);
+    filter: brightness(1.2);
+}
+
+.tile.COLOR_BOMB.tile-special-glow {
+    box-shadow: 0 0 15px 7px rgba(255, 0, 255, 0.8), inset 0 0 8px rgba(255, 0, 255, 0.6);
+    filter: brightness(1.3);
+}
+
+@keyframes neon-pulse {
+    from {
+        opacity: 0.9;
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1.01);
+    }
+}
+
+@keyframes pulse-select {
+
+    0%,
+    100% {
+        border: 3px solid rgba(255, 255, 0, 0.7);
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(255, 255, 0, 0.9);
+    }
+
+    50% {
+        border: 3px solid rgba(255, 255, 0, 0.3);
+        transform: scale(1.0);
+        box-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+    }
+}
+
+.tile.selected-tile {
+    transition: transform 0.1s ease-out, border 0.5s ease, box-shadow 0.5s ease;
+    animation: pulse-select 1s infinite alternate;
+    z-index: 100 !important;
+}
+
+#zeca-animation-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    bottom: 0;
+    z-index: 1000;
+    pointer-events: none;
+    width: 250px;
+    height: 250px;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+#zeca-sprite {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#zeca-animation-container.zeca-active {
+    transform: translateX(-50%) translateY(0);
+}
+
+.floating-score {
+    position: fixed;
+    pointer-events: none;
+    font-family: 'BungeeSpice', sans-serif;
+    color: #ffffff;
+    z-index: 10000;
+    text-shadow: 3px 3px 0 #000;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+@keyframes score-pop {
+    0% {
+        transform: scale(0.2);
+        opacity: 0;
+    }
+
+    15% {
+        transform: scale(1.3);
+        opacity: 1;
+    }
+
+    30% {
+        transform: scale(1.0);
+    }
+
+    100% {
+        transform: translate(var(--target-x), var(--target-y)) scale(0.4);
+        opacity: 0.2;
+    }
+}
