@@ -282,13 +282,16 @@ export class PhaseManager {
     scrollToCurrentLevel() {
         const targetId = `level-btn-${this.maxLevelReached}`;
         const targetBtn = document.getElementById(targetId);
-        const levelList = document.querySelector('.level-list');
+        const levelList = document.querySelector('#level-list'); 
 
         if (targetBtn && levelList) {
-            targetBtn.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-                inline: 'center'
+            const containerHeight = levelList.clientHeight;
+            const btnTop = targetBtn.offsetTop;
+            const btnHeight = targetBtn.clientHeight;
+
+            levelList.scrollTo({
+                top: btnTop - (containerHeight / 2) + (btnHeight / 2),
+                behavior: 'smooth'
             });
         }
     }
